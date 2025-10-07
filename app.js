@@ -12,7 +12,7 @@ let habits = JSON.parse(localStorage.getItem("habits")) || [];
 let activeHabit = null;
 
 // ------------------
-// Startseite
+// Homepage
 // ------------------
 function renderHabits() {
     habitList.innerHTML = "";
@@ -27,16 +27,16 @@ function renderHabits() {
 }
 
 newHabitBtn.onclick = () => {
-    const name = prompt("Name des Habits:");
+    const name = prompt("Name of the habit:");
     if (!name) return;
-    const color = prompt("Farbe (z.B. #3498db):", "#3498db");
+    const color = prompt("Color (f.e. red or #3498db):", "#3498db");
     habits.push({ name, color, entries: [] });
     localStorage.setItem("habits", JSON.stringify(habits));
     renderHabits();
 };
 
 // ------------------
-// Detailseite
+// Detail page
 // ------------------
 function openHabit(index) {
     activeHabit = index;
