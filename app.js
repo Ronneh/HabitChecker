@@ -29,7 +29,7 @@ function renderHabits() {
 newHabitBtn.onclick = () => {
     const name = prompt("Name of the habit:");
     if (!name) return;
-    const color = prompt("Color (f.e. red or #3498db):", "#3498db");
+    const color = prompt("Color (e.g. red or #3498db):", "#3498db");
     habits.push({ name, color, entries: [] });
     localStorage.setItem("habits", JSON.stringify(habits));
     renderHabits();
@@ -49,9 +49,23 @@ function openHabit(index) {
 
 function renderEntries() {
     entryList.innerHTML = "";
-    habits[activeHabit].entries.forEach(entry => {
+    habits[activeHabit].entries.forEach((entry, i) => {
         const li = document.createElement("li");
-        li.textContent = entry;
+        li.classList.add("entry");
+
+        const span = document.createElement("span");
+        span.textContent = entry;
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "✖";
+        deleteBtn.onclick = () => {
+            habits[activeHabit].entries.splice(i, 1); // remove from array
+            localStorage.setItem("habits", JSON.stringify(habits)); // save
+            renderEntries(); // re-render
+        };
+
+        li.appendChild(span);
+        li.appendChild(deleteBtn);
         entryList.appendChild(li);
     });
 }
@@ -70,6 +84,6 @@ backBtn.onclick = () => {
 };
 
 // ------------------
-// Initialisierung
+// Initialization
 // ------------------
 renderHabits();

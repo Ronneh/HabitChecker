@@ -62,8 +62,7 @@ header {
 
     #entryList li {
         text-align: center;
-        padding: 0.5rem 0;
-        border-bottom: 1px solid #333; /* optional kleine Linie dazwischen */
+        border-bottom: 1px solid #333;
     }
 
 button {
@@ -79,11 +78,10 @@ button {
 }
 
 .floating-btn {
-    position: fixed; /* bleibt beim Scrollen sichtbar */
-    bottom: 20px; /* Abstand vom unteren Rand */
-    left: 50%; /* mittig ausrichten */
-    transform: translateX(-50%); /* wirklich zentrieren */
-
+    position: fixed;
+    bottom: 20px; 
+    left: 50%; 
+    transform: translateX(-50%); 
     background: #4caf50;
     color: white;
     padding: 1rem 2rem;
@@ -92,5 +90,31 @@ button {
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     font-size: 1rem;
     cursor: pointer;
-    z-index: 1000; /* immer im Vordergrund */
+    z-index: 1000;
 }
+
+.entry {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #222;
+    color: #fff;
+    padding: 0.5rem 1rem;
+    margin: 0.3rem auto;
+    border-radius: 8px;
+    position: relative;
+    width: 25%;
+}
+
+    .entry button {
+        background: #e74c3c;
+        border: none;
+        color: white;
+        padding: 0.3rem 0.6rem;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+
+        .entry button:hover {
+            background: #c0392b;
+        }
