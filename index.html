@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8" />
@@ -9,11 +9,24 @@
 </head>
 <body>
     <header>
-        <h1>HabitChecker</h1>
-        <button id="newHabitBtn">Neues Habit</button>
+        <h1 style="text-align: center;">HabitChecker</h1>
     </header>
 
-    <main id="habitContainer"></main>
+    <main id="app">
+        <!-- Startseite -->
+        <section id="habitOverview" class="view active">
+            <div id="habitList" class="habit-list"></div>
+            <button id="newHabitBtn" class="floating-btn">+ New habit</button>
+        </section>
+
+        <!-- Detailseite -->
+        <section id="habitDetail" class="view">
+            <button id="backBtn">← Back</button>
+            <h2 id="habitTitle"></h2>
+            <ul id="entryList"></ul>
+            <button id="addEntryBtn" class="floating-btn">+ Add</button>
+        </section>
+    </main>
 
     <script src="app.js"></script>
 </body>
