@@ -1,117 +1,75 @@
-const habitContainer = document.getElementById("habitContainer");
+ï»¿const habitOverview = document.getElementById("habitOverview");
+const habitDetail = document.getElementById("habitDetail");
+const habitList = document.getElementById("habitList");
+const entryList = document.getElementById("entryList");
+const habitTitle = document.getElementById("habitTitle");
+
 const newHabitBtn = document.getElementById("newHabitBtn");
+const backBtn = document.getElementById("backBtn");
+const addEntryBtn = document.getElementById("addEntryBtn");
 
-newHabitBtn.addEventListener("click", () => {
-    const name = prompt("Name des Habits?");
-    const color = prompt("Farbe (z. B. red, #2196f3)?");
+let habits = JSON.parse(localStorage.getItem("habits")) || [];
+let activeHabit = null;
 
-    if (name) {
-        createHabit(name, color || "#ddd");
-    }
-});
+// ------------------
+// Startseite
+// ------------------
+function renderHabits() {
+    habitList.innerHTML = "";
+    habits.forEach((habit, index) => {
+        const card = document.createElement("div");
+        card.className = "habit-card";
+        card.style.background = habit.color;
+        card.textContent = habit.name;
+        card.onclick = () => openHabit(index);
+        habitList.appendChild(card);
+    });
+}
 
-function createHabit(name, color) {
-    const habitDiv = document.createElement("div");
-    habitDiv.classList.add("habit");
-    habitDiv.style.borderLeft = `8px solid ${color}`;
+newHabitBtn.onclick = () => {
+    const name = prompt("Name des Habits:");
+    if (!name) return;
+    const color = prompt("Farbe (z.B. #3498db):", "#3498db");
+    habits.push({ name, color, entries: [] });
+    localStorage.setItem("habits", JSON.stringify(habits));
+    renderHabits();
+};
 
-    const title = document.createElement("div");
-    title.classList.add("habit-title");
-    title.textContent = name;
+// ------------------
+// Detailseite
+// ------------------
+function openHabit(index) {
+    activeHabit = index;
+    habitTitle.textContent = habits[index].name;
+    renderEntries();
 
-    const list = document.createElement("ul");
-    list.classList.add("entry-list");
+    habitOverview.classList.remove("active");
+    habitDetail.classList.add("active");
+}
 
-    const button = document.createElement("button");
-    button.classList.add("add-entry-btn");
-    button.textContent = "Eintrag hinzufuegen";
-
-    button.addEventListener("click", () => {
-        const now = new Date();
-        const formatted = formatDate(now);
+function renderEntries() {
+    entryList.innerHTML = "";
+    habits[activeHabit].entries.forEach(entry => {
         const li = document.createElement("li");
-        li.textContent = formatted;
-        list.prepend(li);
-    });
-
-    habitDiv.appendChild(title);
-    habitDiv.appendChild(list);
-    habitDiv.appendChild(button);
-    habitContainer.appendChild(habitDiv);
-}
-
-function formatDate(date) {
-    const d = String(date.getDate()).padStart(2, "0");
-    const m = String(date.getMonth() + 1).padStart(2, "0");
-    const y = date.getFullYear();
-    const h = String(date.getHours()).padStart(2, "0");
-    const min = String(date.getMinutes()).padStart(2, "0");
-    const s = String(date.getSeconds()).padStart(2, "0");
-    return `${d}.${m}.${y} ${h}:${min}:${s}`;
-}
-
-if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("sw.js").then(() => {
-        console.log("Service Worker registriert");
+        li.textContent = entry;
+        entryList.appendChild(li);
     });
 }
 
-// Beim Laden gespeicherte Habits anzeigen
-window.addEventListener("load", () => {
-    const data = JSON.parse(localStorage.getItem("habits")) || [];
-    data.forEach(habit => {
-        createHabit(habit.name, habit.color, habit.entries);
-    });
-});
+addEntryBtn.onclick = () => {
+    const now = new Date();
+    const timestamp = now.toLocaleDateString("de-DE") + " " + now.toLocaleTimeString("de-DE");
+    habits[activeHabit].entries.push(timestamp);
+    localStorage.setItem("habits", JSON.stringify(habits));
+    renderEntries();
+};
 
-function createHabit(name, color, entries = []) {
-    const habitDiv = document.createElement("div");
-    habitDiv.classList.add("habit");
-    habitDiv.style.borderLeft = `8px solid ${color}`;
+backBtn.onclick = () => {
+    habitDetail.classList.remove("active");
+    habitOverview.classList.add("active");
+};
 
-    const title = document.createElement("div");
-    title.classList.add("habit-title");
-    title.textContent = name;
-
-    const list = document.createElement("ul");
-    list.classList.add("entry-list");
-
-    entries.forEach(e => {
-        const li = document.createElement("li");
-        li.textContent = e;
-        list.appendChild(li);
-    });
-
-    const button = document.createElement("button");
-    button.classList.add("add-entry-btn");
-    button.textContent = "Eintrag hinzufügen";
-
-    button.addEventListener("click", () => {
-        const now = new Date();
-        const formatted = formatDate(now);
-        const li = document.createElement("li");
-        li.textContent = formatted;
-        list.prepend(li);
-
-        saveHabits();
-    });
-
-    habitDiv.appendChild(title);
-    habitDiv.appendChild(list);
-    habitDiv.appendChild(button);
-    habitContainer.appendChild(habitDiv);
-
-    saveHabits();
-}
-
-function saveHabits() {
-    const allHabits = [];
-    document.querySelectorAll(".habit").forEach(habitDiv => {
-        const name = habitDiv.querySelector(".habit-title").textContent;
-        const color = habitDiv.style.borderLeft.split(" ")[2]; // Farbe aus CSS ziehen
-        const entries = Array.from(habitDiv.querySelectorAll("li")).map(li => li.textContent);
-
-        allHabits.push({ name, color, entries });
-    });
-    localStorage.setItem("habits", JSON.stringify(allHabits));
-}
+// ------------------
+// Initialisierung
+// ------------------
+renderHabits();
